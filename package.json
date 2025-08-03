@@ -4,16 +4,16 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "prebuild": "shx rm -rf dist/*",
-    "build": "tsc",
-    "postbuild": "shx cp src/public/* dist/ && tsx scripts/setup.ts"
+    "setup": "tsx scripts/setup.ts",
+    "prebuild": "npm run setup",
+    "build": "vite build",
+    "dev": "vite"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^24.1.0",
-    "shx": "^0.3.4",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.2"
+    "vite": "^7.0.6"
   }
 }

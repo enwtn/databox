@@ -6,27 +6,23 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const secretData = process.env.SECRET_DATA || process.argv[2];
-const password = process.env.SECRET_PASSWORD || process.argv[3];
+const secretData = process.env.SECRET_DATA;
+const password = process.env.SECRET_PASSWORD;
 
 if (!secretData) {
-  throw new Error(
-    "missing secret data, set SECRET_DATA env var, or provide as the first command line argument"
-  );
+  throw new Error("missing secret data, set SECRET_DATA env var");
 }
 
 if (!password) {
-  throw new Error(
-    "missing password, set SECRET_PASSWORD env var, or provide as the second command line argument"
-  );
+  throw new Error("missing password, set SECRET_PASSWORD env var");
 }
 
 const result = await encryptData(secretData, password);
 const serializedData = serialize(result);
 
-await mkdir(path.resolve(__dirname, "../dist"), { recursive: true });
+await mkdir(path.resolve(__dirname, "../src/public"), { recursive: true });
 
 await writeFile(
-  path.resolve(__dirname, "../dist/data.bin"),
+  path.resolve(__dirname, "../src/public/data.bin"),
   new DataView(await serializedData.arrayBuffer())
 );

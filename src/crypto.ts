@@ -1,3 +1,5 @@
+// heavily inspired by https://medium.com/@thomas_40553/how-to-secure-encrypt-and-decrypt-data-within-the-browser-with-aes-gcm-and-pbkdf2-057b839c96b6
+
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
@@ -78,8 +80,6 @@ export async function decryptData(
 
   return decoder.decode(decryptedContent);
 }
-
-// NOTE: I DIDN"T TEST THESE AT ALL YET
 
 export function serialize({
   ciphertext,
