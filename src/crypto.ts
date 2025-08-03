@@ -3,6 +3,8 @@
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
+export type EncryptedData = Awaited<ReturnType<typeof encrypt>>;
+
 async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>) {
   const encodedPassword = encoder.encode(password);
   const baseKey = await crypto.subtle.importKey(
@@ -29,7 +31,7 @@ async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>) {
   return derivedKey;
 }
 
-export async function encryptData(data: string, password: string) {
+export async function encrypt(data: string, password: string) {
   const salt = crypto.getRandomValues(new Uint8Array(16)); // 128-bit salt
   const iv = crypto.getRandomValues(new Uint8Array(12)); // 12 bytes for AES-GCM
   const key = await deriveKey(password, salt);
@@ -60,10 +62,7 @@ export async function encryptData(data: string, password: string) {
   };
 }
 
-export async function decryptData(
-  encryptedData: Awaited<ReturnType<typeof encryptData>>,
-  password: string
-) {
+export async function decrypt(encryptedData: EncryptedData, password: string) {
   const { ciphertext, iv, authTag, salt } = encryptedData;
   const key = await deriveKey(password, salt);
 
@@ -79,40 +78,4 @@ export async function decryptData(
   );
 
   return decoder.decode(decryptedContent);
-}
-
-export function serialize({
-  ciphertext,
-  iv,
-  authTag,
-  salt,
-}: Awaited<ReturnType<typeof encryptData>>) {
-  const lengths = [ciphertext, iv, authTag, salt].map((a) => a.length);
-
-  const encodedLengths = new Uint8Array(Uint32Array.from(lengths).buffer);
-
-  return new Blob([encodedLengths, ciphertext, iv, authTag, salt]);
-}
-
-export async function deserialize(blob: Blob) {
-  const encodedLengths = blob.slice(0, 4 * 4); // 4x uint32
-
-  const lengths = new Uint32Array(await encodedLengths.arrayBuffer());
-
-  let data: Uint8Array<ArrayBuffer>[] = [];
-
-  let offset = 4 * 4;
-  for (let i = 0; i < lengths.length; i++) {
-    const length = lengths[i];
-
-    data[i] = new Uint8Array(
-      await blob.slice(offset, offset + length).arrayBuffer()
-    );
-
-    offset += length;
-  }
-
-  const [ciphertext, iv, authTag, salt] = data;
-
-  return { ciphertext, iv, authTag, salt };
 }
