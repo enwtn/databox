@@ -1,0 +1,7 @@
+{
+  "name": "help-im-lost",
+  "compatibility_date": "2025-08-03",
+  "assets": {
+    "directory": "./dist"
+  }
+}

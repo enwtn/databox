@@ -20,9 +20,7 @@ if (!password) {
 const result = await encryptData(secretData, password);
 const serializedData = serialize(result);
 
-await mkdir(path.resolve(__dirname, "../src/public"), { recursive: true });
+const filePath = path.resolve(__dirname, "../public/data.bin");
+await writeFile(filePath, new DataView(await serializedData.arrayBuffer()));
 
-await writeFile(
-  path.resolve(__dirname, "../src/public/data.bin"),
-  new DataView(await serializedData.arrayBuffer())
-);
+console.log(`wrote encrypted data to ${filePath}`);
