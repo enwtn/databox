@@ -1,5 +1,6 @@
-import { mkdir, writeFile } from "fs/promises";
-import { encryptData, serialize } from "../src/crypto";
+import { writeFile } from "fs/promises";
+import { encrypt } from "../src/crypto";
+import { serialize } from "../src/serialize";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -17,7 +18,7 @@ if (!password) {
   throw new Error("missing password, set SECRET_PASSWORD env var");
 }
 
-const result = await encryptData(secretData, password);
+const result = await encrypt(secretData, password);
 const serializedData = serialize(result);
 
 const filePath = path.resolve(__dirname, "../public/data.bin");
