@@ -2,15 +2,18 @@
   "name": "contact-info",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "prebuild": "shx rm -rf dist/*",
     "build": "tsc",
-    "postbuild": "shx cp src/public/* dist/"
+    "postbuild": "shx cp src/public/* dist/ && tsx scripts/setup.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^24.1.0",
     "shx": "^0.3.4",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.2"
   }
 }
