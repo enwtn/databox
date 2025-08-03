@@ -5,7 +5,7 @@ const LENGTH_BYTES = 16; // 4x uint32
 export function serialize({ ciphertext, iv, authTag, salt }: EncryptedData) {
   const lengths = [ciphertext, iv, authTag, salt].map((a) => a.length);
 
-  const encodedLengths = new Uint8Array(Uint32Array.from(lengths).buffer);
+  const encodedLengths = Uint32Array.from(lengths);
 
   return new Blob([encodedLengths, ciphertext, iv, authTag, salt]);
 }
